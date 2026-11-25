@@ -366,11 +366,6 @@
                 <button class="btn btn-success w-100 mt-2" onclick="saveSettings()">💾 Salvar Configurações</button>
             </div>
 
-            <button class="menu-btn-principal" onclick="abrirLixeira()" style="border-color: #dc3545;">
-                <i class="bi bi-trash3-fill" style="color: #dc3545;"></i>
-                <span>LIXO</span>
-            </button>
-
             <button class="menu-btn-principal" onclick="handleLogout()" style="background: linear-gradient(135deg, #5a1a1a, #1a1a1a); border-color: #dc3545;">
                 <i class="bi bi-box-arrow-right" style="color: #dc3545;"></i>
                 <span>Sair</span>
@@ -435,7 +430,7 @@
                 <button class="btn-small" style="background-color: orange;" onclick="filterData('vencer')">A VENCER <span id="countVencer">0</span></button>
                 <button class="btn-small bg-danger" onclick="filterData('expirados')">EXPIRADOS <span id="countExp">0</span></button>
                 <button class="btn-small bg-info" onclick="filterData('apagar')">A RECEBER <span id="countPagar">0</span></button>
-                <button class="btn-small bg-secondary" onclick="filterData('deletados')" style="display: none;">LIXO <span id="countDel">0</span></button>
+                <button class="btn-small bg-secondary" onclick="filterData('deletados')">LIXO <span id="countDel">0</span></button>
             </div>
 
             <div id="listaClientes"></div>
@@ -699,6 +694,9 @@
                         </button>
                         <button class="desktop-filter-pill" onclick="filterDataDesktop('apagar', this)" style="color:#0dcaf0;">
                             <i class="bi bi-hourglass"></i> A Receber <span class="pill-count" id="deskCountPagar">0</span>
+                        </button>
+                        <button class="desktop-filter-pill" onclick="filterDataDesktop('deletados', this)">
+                            <i class="bi bi-trash"></i> LIXO <span class="pill-count" id="deskCountDel">0</span>
                         </button>
                     </div>
                     <div class="desktop-clientes-list" id="deskListaClientes"></div>
@@ -1708,6 +1706,7 @@
             if(currentFilterDesktop === 'vencer' && statusReal !== 'vencer') return;
             if(currentFilterDesktop === 'expirados' && statusReal !== 'expirado') return;
             if(currentFilterDesktop === 'apagar' && c.status !== 'apagar') return;
+            if(currentFilterDesktop === 'deletados' && c.status !== 'deletado') return;
             if(!c.nome.toLowerCase().includes(searchTerm)) return;
             
             let badgeClass = 'bg-success';
@@ -1715,6 +1714,7 @@
             if(statusReal === 'expirado') { badgeClass = 'bg-danger'; badgeText = 'EXPIRADO'; }
             else if(statusReal === 'vencer') { badgeClass = 'bg-warning text-dark'; badgeText = 'A VENCER'; }
             else if(c.status === 'apagar') { badgeClass = 'bg-info'; badgeText = 'A RECEBER'; }
+            else if(c.status === 'deletado') { badgeClass = 'bg-secondary'; badgeText = 'LIXO'; }
             let dataExib = c.data.split('-').reverse().join('/');
             
             listaDiv.innerHTML += `
@@ -1737,6 +1737,7 @@
         document.getElementById('deskCountVencer').innerText = counts.vencer;
         document.getElementById('deskCountExp').innerText = counts.exp;
         document.getElementById('deskCountPagar').innerText = counts.apagar;
+        document.getElementById('deskCountDel').innerText = counts.del;
     }
 
     function sincronizarCamposPainelDesktop() {
@@ -2654,10 +2655,6 @@
         }); 
     }
     function openNav() { document.getElementById("mySidenav").style.width = "300px"; }
-    function abrirLixeira() {
-        closeNav();
-        window.open('lixeira.html', '_blank', 'noopener');
-    }
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
         document.querySelectorAll('.menu-secao').forEach(s => s.classList.remove('active'));
